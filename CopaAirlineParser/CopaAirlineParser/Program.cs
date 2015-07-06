@@ -30,14 +30,12 @@ namespace CopaAirlineParser
                 while (reader.Read()) {
                     Console.WriteLine("ID: " + reader["flightId"] + "\tFrom: " + reader["dptCity"] + "\tTo: " + reader["arvCity"]);
                 }
-
-
             }
             else
             {
                 Console.WriteLine(filePath);
                 Console.ReadKey();
-
+                Webservice.GetLastUpdate()
             }
 
         }
