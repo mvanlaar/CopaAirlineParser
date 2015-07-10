@@ -129,7 +129,7 @@ namespace CopaAirlineParser
             m_dbConnection = new SQLiteConnection("Data Source=" + sqldb + ";Version=3;");
             m_dbConnection.Open();
             string sqlupdate = "select * from lastupdated;";
-            string sql = "select flights.dptSta, flights.arvSta, datetime(effDate) as effDate, datetime(discDate) as discDate, opMon, opTue, opWed, opThu, opFri, opSat, opSun, cast(dptTimeLocal as TEXT) as dptTimeLocal,  cast(arvTimeLocal as TEXT) as arvTimeLocal, carrier, flightNum, equipCode, codeshare, opCarrier, arvNextDay, legNextDay from flights inner join legs on flights.flightId = legs.flightId where flights.numLegs=1 and legs.numStops =0";
+            string sql = "select flights.dptSta, flights.arvSta, datetime(effDate) as effDate, datetime(discDate) as discDate, opMon, opTue, opWed, opThu, opFri, opSat, opSun, cast(dptTimeLocal as TEXT) as dptTimeLocal,  cast(arvTimeLocal as TEXT) as arvTimeLocal, carrier, flightNum, equipCode, codeshare, opCarrier, arvNextDay, legNextDay, flights.flightMinutes from flights inner join legs on flights.flightId = legs.flightId where flights.numLegs=1 and legs.numStops =0";
             SQLiteCommand commandupd = new SQLiteCommand(sqlupdate, m_dbConnection);
             SQLiteDataReader readerupd = commandupd.ExecuteReader();
             while (readerupd.Read())
@@ -174,9 +174,7 @@ namespace CopaAirlineParser
                 TEMP_FlightThursday = Boolean.Parse(reader["opThu"].ToString());
                 TEMP_FlightFriday = Boolean.Parse(reader["opFri"].ToString());
                 TEMP_FlightSaterday = Boolean.Parse(reader["opSat"].ToString());
-                TEMP_FlightSunday = Boolean.Parse(reader["opSun"].ToString());
-                string tempfrom = reader["dptTimeLocal"].ToString();
-
+                TEMP_FlightSunday = Boolean.Parse(reader["opSun"].ToString());                
                 TEMP_DepartTime = DateTime.ParseExact(reader["dptTimeLocal"].ToString(), dateformat, ci);
                 TEMP_ArrivalTime = DateTime.ParseExact(reader["arvTimeLocal"].ToString(), dateformat, ci);
                 TEMP_FlightNumber = reader["carrier"].ToString() + reader["flightNum"].ToString();
@@ -197,7 +195,7 @@ namespace CopaAirlineParser
                 }                
                 TEMP_Airline = reader["carrier"].ToString();
                 TEMP_FlightNextDays = int.Parse(reader["legNextDay"].ToString());
-                TEMP_DurationTime = TimeSpan.FromMinutes(double.Parse(reader["legNextDay"].ToString()));
+                TEMP_DurationTime = TimeSpan.FromMinutes(double.Parse(reader["flightMinutes"].ToString()));
 
                 CIFLights.Add(new CIFLight
                 {
