@@ -12,6 +12,8 @@ using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Core;
 using System.Globalization;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace CopaAirlineParser
 {
@@ -232,8 +234,62 @@ namespace CopaAirlineParser
 
             writer.Serialize(file, CIFLights);
             file.Close();
-            Console.ReadKey();
 
+            Console.WriteLine("Insert into Database...");
+            for (int i = 0; i < CIFLights.Count; i++) // Loop through List with for)
+            {
+                using (SqlConnection connection = new SqlConnection("Server=(local);Database=CI-Import;Trusted_Connection=True;"))
+                {
+                    using (SqlCommand command3 = new SqlCommand())
+                    {
+                        command3.Connection = connection;            // <== lacking
+                        command3.CommandType = CommandType.StoredProcedure;
+                        command3.CommandText = "InsertFlight";
+                        command3.Parameters.Add(new SqlParameter("@FlightSource", "Copa"));
+                        command3.Parameters.Add(new SqlParameter("@FromIATA", CIFLights[i].FromIATA));
+                        command3.Parameters.Add(new SqlParameter("@ToIATA", CIFLights[i].ToIATA));
+                        command3.Parameters.Add(new SqlParameter("@FromDate", CIFLights[i].FromDate));
+                        command3.Parameters.Add(new SqlParameter("@ToDate", CIFLights[i].ToDate));
+                        command3.Parameters.Add(new SqlParameter("@FlightMonday", CIFLights[i].FlightMonday));
+                        command3.Parameters.Add(new SqlParameter("@FlightTuesday", CIFLights[i].FlightTuesday));
+                        command3.Parameters.Add(new SqlParameter("@FlightWednesday", CIFLights[i].FlightWednesday));
+                        command3.Parameters.Add(new SqlParameter("@FlightThursday", CIFLights[i].FlightThursday));
+                        command3.Parameters.Add(new SqlParameter("@FlightFriday", CIFLights[i].FlightFriday));
+                        command3.Parameters.Add(new SqlParameter("@FlightSaterday", CIFLights[i].FlightSaterday));
+                        command3.Parameters.Add(new SqlParameter("@FlightSunday", CIFLights[i].FlightSunday));
+                        command3.Parameters.Add(new SqlParameter("@DepartTime", CIFLights[i].DepartTime));
+                        command3.Parameters.Add(new SqlParameter("@ArrivalTime", CIFLights[i].ArrivalTime));
+                        command3.Parameters.Add(new SqlParameter("@FlightNumber", CIFLights[i].FlightNumber));
+                        command3.Parameters.Add(new SqlParameter("@FlightAirline", CIFLights[i].FlightAirline));
+                        command3.Parameters.Add(new SqlParameter("@FlightOperator", CIFLights[i].FlightOperator));
+                        command3.Parameters.Add(new SqlParameter("@FlightAircraft", CIFLights[i].FlightAircraft));
+                        command3.Parameters.Add(new SqlParameter("@FlightCodeShare", CIFLights[i].FlightCodeShare));
+                        command3.Parameters.Add(new SqlParameter("@FlightNextDayArrival", CIFLights[i].FlightNextDayArrival));
+                        command3.Parameters.Add(new SqlParameter("@FlightDuration", CIFLights[i].FlightDuration));
+                        command3.Parameters.Add(new SqlParameter("@FlightNextDays", CIFLights[i].FlightNextDays));
+                        foreach (SqlParameter parameter in command3.Parameters)
+                        {
+                            if (parameter.Value == null)
+                            {
+                                parameter.Value = DBNull.Value;
+                            }
+                        }
+
+
+                        try
+                        {
+                            connection.Open();
+                            int recordsAffected = command3.ExecuteNonQuery();
+                        }
+
+                        finally
+                        {
+                            connection.Close();
+                        }
+                    }
+                }
+
+            }
         }
         
     }
