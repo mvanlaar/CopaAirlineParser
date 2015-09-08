@@ -267,6 +267,8 @@ namespace CopaAirlineParser
                         command3.Parameters.Add(new SqlParameter("@FlightNextDayArrival", CIFLights[i].FlightNextDayArrival));
                         command3.Parameters.Add(new SqlParameter("@FlightDuration", CIFLights[i].FlightDuration));
                         command3.Parameters.Add(new SqlParameter("@FlightNextDays", CIFLights[i].FlightNextDays));
+                        command3.Parameters.Add(new SqlParameter("@FlightNonStop", true));
+                        command3.Parameters.Add(new SqlParameter("@FlightVia", DBNull.Value));
                         foreach (SqlParameter parameter in command3.Parameters)
                         {
                             if (parameter.Value == null)
