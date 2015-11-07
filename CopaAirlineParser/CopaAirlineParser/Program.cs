@@ -58,7 +58,7 @@ namespace CopaAirlineParser
             System.IO.Directory.CreateDirectory(myDir);
             string sqldb = Path.Combine(myDir, "cm.sqlite");
             string dbdownload = Path.Combine(myDir, "cm.gz");
-            string filePath = Path.Combine(appDataFolder, "CMsafdasdf.db");
+            string filePath = Path.Combine(appDataFolder, "CM.db");
             DateTime ValidFrom = DateTime.MinValue;
             DateTime ValidTo = DateTime.MinValue;
             List<CIFLight> CIFLights = new List<CIFLight> { };
@@ -245,7 +245,7 @@ namespace CopaAirlineParser
                         command3.Connection = connection;            // <== lacking
                         command3.CommandType = CommandType.StoredProcedure;
                         command3.CommandText = "InsertFlight";
-                        command3.Parameters.Add(new SqlParameter("@FlightSource", "Copa"));
+                        command3.Parameters.Add(new SqlParameter("@FlightSource", 8));
                         command3.Parameters.Add(new SqlParameter("@FromIATA", CIFLights[i].FromIATA));
                         command3.Parameters.Add(new SqlParameter("@ToIATA", CIFLights[i].ToIATA));
                         command3.Parameters.Add(new SqlParameter("@FromDate", CIFLights[i].FromDate));
